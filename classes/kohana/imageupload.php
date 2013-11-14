@@ -1,7 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+
+
 class Kohana_ImageUpload extends UploadHandler
 {
+
+
+    /**
+     * Allows to access response data before encoded it is encoded to javascript
+     *
+     * @var   mixed   $response   saved response
+     */
+    public
+        $response = false;
+
+
+
+    /**
+     * Add extra options
+     * TODO: Use kohana configuration
+     *
+     * @param   array     $options          adds extra
+     * @param   boolean   $initialize       passed down
+     * @param   number    $error_messages   passed down
+     */
     function __construct($options = null, $initialize = true, $error_messages = null)
     {
 
@@ -10,6 +32,8 @@ class Kohana_ImageUpload extends UploadHandler
             'allow_overwrite' => false,
             'filename'        => false,
             'mkdir_mode'      => 0765, // 0755 + 0664 -> 0765
+
+            'save_response'   => false,
         );
 
         if ($options)
@@ -20,10 +44,11 @@ class Kohana_ImageUpload extends UploadHandler
         parent::__construct( $_options, $initialize, $error_messages );
     } # fucntion
 
+
+
     /**
      * Implemented filename & allow_overwrite options
      *
-     * @author  Andrius Kazdailevicius
      * @param   string   $name            of file
      * @param   string   $type            mime of the file
      * @param   number   $index           passed down
@@ -52,11 +77,12 @@ class Kohana_ImageUpload extends UploadHandler
         return parent::get_file_name($name, $type, $index, $content_range);
     } # function
 
+
+
     /**
      * Creates or update file on the server.
      * Added ability for file version to be in the same directory
      *
-     * @author  Andrius Kazdailevicius
      * @param   string   $file_name   of image
      * @param   array    $version     of options
      * @param   array    $options
@@ -97,10 +123,23 @@ class Kohana_ImageUpload extends UploadHandler
         return $return;
     } # function
 
+
+
     /**
      * Make sure delete never happens
      *
-     * @author  Andrius Kazdailevicius
+     * @param   boolean   $print_response
+     * @return  void
+     */
+    protected function generate_response( $content, $print_response = true ) {
+        return parent::generate_response( $content, $print_response );
+    } # function
+
+
+
+    /**
+     * Make sure delete never happens
+     *
      * @param   boolean   $print_response
      * @return  void
      */
