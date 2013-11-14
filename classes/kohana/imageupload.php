@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class KohanaUploadHandler extends UploadHandler
+class Kohana_ImageUpload extends UploadHandler
 {
     function __construct($options = null, $initialize = true, $error_messages = null)
     {
@@ -9,7 +9,7 @@ class KohanaUploadHandler extends UploadHandler
             // This options prevents generating new unique file name
             'allow_overwrite' => false,
             'filename'        => false,
-            'mkdir_mode'      => 0664,
+            'mkdir_mode'      => 0765, // 0755 + 0664 -> 0765
         );
 
         if ($options)
