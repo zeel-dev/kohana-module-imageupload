@@ -31,7 +31,7 @@ class Kohana_ImageUpload extends UploadHandler
             // This options prevents generating new unique file name
             'allow_overwrite' => false,
             'filename'        => false,
-            'mkdir_mode'      => 0765, // 0755 + 0664 -> 0765
+            'mkdir_mode'      => 0775, // 0755 + 0664 -> 0765
 
             'save_response'   => false,
         );
@@ -88,20 +88,20 @@ class Kohana_ImageUpload extends UploadHandler
      * @param   array    $options
      * @return  boolean               true if update or create was successfull
      */
-    protected function create_scaled_image($file_name, $version, $options)
+    protected function create_scaled_image( $file_name, $version, $options )
     {
         // Change behaviour of file upload
-        if (!empty($version) && isset($options['filename']))
+        if ( !empty( $version ) && isset( $options['filename'] ))
         {
             $return = parent::create_scaled_image( $file_name, $version, $options );
 
             // Move image if file name is specified
             if ( $return )
             {
-                $old_file_path = $this->get_upload_path(null, $version) . $file_name;
+                $old_file_path = $this->get_upload_path( null, $version ) . $file_name;
 
                 // Add extension to file name
-                if ( strpos($options['filename'], '.') === false )
+                if ( strpos( $options['filename'], '.' ) === false )
                 {
                     $options['filename'] .= '.' . pathinfo($file_name, PATHINFO_EXTENSION);
                 } # if
@@ -112,15 +112,33 @@ class Kohana_ImageUpload extends UploadHandler
 
                 $return = rename( $old_file_path, $new_file_path );
 
-                // @chmod( $new_file_path, 0664 );
+                @chmod( $new_file_path, 0664 );
             } # if
         }
         else
         {
             $return = parent::create_scaled_image( $file_name, $version, $options );
+
+            @chmod( $this->get_upload_path( $file_name ), 0664 );
         } # else
 
         return $return;
+    } # function
+
+
+
+    /**
+     * Chages permissions for uploaded file
+     *
+     * @param   string   $file_path   of image
+     * @param   ???      $file        of options
+     * @return  void
+     */
+    protected function handle_image_file( $file_path, $file )
+    {
+        @chmod( $file_path, 0664 );
+
+        return parent::handle_image_file( $file_path, $file );
     } # function
 
 
