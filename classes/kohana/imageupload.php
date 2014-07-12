@@ -156,6 +156,24 @@ class Kohana_ImageUpload extends UploadHandler
 
 
     /**
+     * Store response
+     *
+     * @param   string   $str
+     * @return  void
+     */
+    protected function body( $str )
+    {
+        if ( is_string( $str ) && strlen( $str ) > 1 && $str[0] == '{' )
+        {
+            $this->response = json_decode( $str, true );
+        } # if
+
+        parent::body( $str );
+    } # method
+
+
+
+    /**
      * Make sure delete never happens
      *
      * @param   boolean   $print_response
