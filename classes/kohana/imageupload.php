@@ -65,7 +65,7 @@ class Kohana_ImageUpload extends UploadHandler
             // Add extension to file name
             if ( strpos($name, '.') === false && preg_match( Arr::get( $this->options, 'append_suffix_regex', '/^image\/(gif|jpe?g|png)/' ), $type, $matches))
             {
-                $name .= '.'.$matches[1];
+                $name .= '.'. Arr::get( Arr::get( $this->options, 'transform_suffix', array()), $matches[1], $matches[1] );
             }
 
             if ( !is_file($this->get_upload_path($name)) || $this->options['allow_overwrite'] )
